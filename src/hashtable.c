@@ -29,9 +29,9 @@
 #include <upo/utility.h>
 
 
-/*** EXERCISE #1 - BEGIN of HASH TABLE with SEPARATE CHAINING ***/
+/*** HASH TABLE with SEPARATE CHAINING ***/
 
-
+// Creazione ht con separate chain
 upo_ht_sepchain_t upo_ht_sepchain_create(size_t m, upo_ht_hasher_t key_hash, upo_ht_comparator_t key_cmp)
 {
     upo_ht_sepchain_t ht = NULL;
@@ -79,6 +79,7 @@ upo_ht_sepchain_t upo_ht_sepchain_create(size_t m, upo_ht_hasher_t key_hash, upo
     return ht;
 }
 
+// Cancellazione ht con separate chain
 void upo_ht_sepchain_destroy(upo_ht_sepchain_t ht, int destroy_data)
 {
     if (ht != NULL)
@@ -89,6 +90,7 @@ void upo_ht_sepchain_destroy(upo_ht_sepchain_t ht, int destroy_data)
     }
 }
 
+// Svuotamento ht con separate chain
 void upo_ht_sepchain_clear(upo_ht_sepchain_t ht, int destroy_data)
 {
     if (ht != NULL && ht->slots != NULL)
@@ -121,6 +123,7 @@ void upo_ht_sepchain_clear(upo_ht_sepchain_t ht, int destroy_data)
     }
 }
 
+// Inserimento valore valore nella ht (sostituzione vecchio valore)
 void* upo_ht_sepchain_put(upo_ht_sepchain_t ht, void *key, void *value)
 {
     void *old_value = NULL;
@@ -177,6 +180,7 @@ void* upo_ht_sepchain_put(upo_ht_sepchain_t ht, void *key, void *value)
     return old_value;
 }
 
+// Inserimento valore valore nella ht 
 void upo_ht_sepchain_insert(upo_ht_sepchain_t ht, void *key, void *value)
 {
     size_t h; //Variabile dove salveró il risultato della funzione di hashing (lo slot)
@@ -205,6 +209,7 @@ void upo_ht_sepchain_insert(upo_ht_sepchain_t ht, void *key, void *value)
     }
 }
 
+// Restituzione valore associato ad una chiave nella tabella hash
 void* upo_ht_sepchain_get(const upo_ht_sepchain_t ht, const void *key)
 {
     size_t h;
@@ -217,6 +222,7 @@ void* upo_ht_sepchain_get(const upo_ht_sepchain_t ht, const void *key)
 
     //Ricerca cella da inserire
     h = ht->key_hash(key, ht->capacity);
+
     // Creazione puntatore di appoggio
     upo_ht_sepchain_list_node_t *node = ht->slots[h].head;
 
@@ -236,9 +242,9 @@ void* upo_ht_sepchain_get(const upo_ht_sepchain_t ht, const void *key)
         // Trovo il valore e lo ritorno
         return node->value;
     }
-
 }
 
+// Ricerca di un determinato valore all'interno della ht (se presente o meno)
 int upo_ht_sepchain_contains(const upo_ht_sepchain_t ht, const void *key)
 {
     if(ht == NULL || ht->slots == NULL){ //Controllo che la tabella e i suoi slot non siano vuoti
@@ -247,6 +253,7 @@ int upo_ht_sepchain_contains(const upo_ht_sepchain_t ht, const void *key)
 
     //Utilizzo la funzione get che ha lo stesso funzionamento per cercare se la chiave é presente nella tabella
     void* value = upo_ht_sepchain_get(ht, key); //Salvo il valore ritornato
+
     if(value != NULL){ //Se il valore é diverso da NULL la chiave é presente nella tabella
         return 1; //Ritorno 1
         
@@ -255,6 +262,7 @@ int upo_ht_sepchain_contains(const upo_ht_sepchain_t ht, const void *key)
     }
 }
 
+// Eliminazione dalla ht della coppia associata ad una determinata chiave
 void upo_ht_sepchain_delete(upo_ht_sepchain_t ht, const void *key, int destroy_data)
 {
     // Variabile di appoggio
@@ -306,6 +314,7 @@ void upo_ht_sepchain_delete(upo_ht_sepchain_t ht, const void *key, int destroy_d
     }    
 }
 
+// Calcolo dimensione sepchain
 size_t upo_ht_sepchain_size(const upo_ht_sepchain_t ht)
 {
     // Controllo che la tabella non sia vuota
@@ -319,16 +328,19 @@ size_t upo_ht_sepchain_size(const upo_ht_sepchain_t ht)
     }
 }
 
+// Controllo ht se vuota
 int upo_ht_sepchain_is_empty(const upo_ht_sepchain_t ht)
 {
     return upo_ht_sepchain_size(ht) == 0 ? 1 : 0;
 }
 
+// Calcolo capacita' ht
 size_t upo_ht_sepchain_capacity(const upo_ht_sepchain_t ht)
 {
     return (ht != NULL) ? ht->capacity : 0;
 }
 
+// Calcolo fattore di carico (dimensione / capacita')
 double upo_ht_sepchain_load_factor(const upo_ht_sepchain_t ht)
 {
     return upo_ht_sepchain_size(ht) / (double) upo_ht_sepchain_capacity(ht);
@@ -344,13 +356,9 @@ upo_ht_hasher_t upo_ht_sepchain_get_hasher(const upo_ht_sepchain_t ht)
     return ht->key_hash;
 }
 
+/*** HASH TABLE with LINEAR PROBING ***/
 
-/*** EXERCISE #1 - END of HASH TABLE with SEPARATE CHAINING ***/
-
-
-/*** EXERCISE #2 - BEGIN of HASH TABLE with LINEAR PROBING ***/
-
-
+// Creazione ht con linprob
 upo_ht_linprob_t upo_ht_linprob_create(size_t m, upo_ht_hasher_t key_hash, upo_ht_comparator_t key_cmp)
 {
     upo_ht_linprob_t ht = NULL;
@@ -400,6 +408,7 @@ upo_ht_linprob_t upo_ht_linprob_create(size_t m, upo_ht_hasher_t key_hash, upo_h
     return ht;
 }
 
+// Cancellazione totale della ht con linprob
 void upo_ht_linprob_destroy(upo_ht_linprob_t ht, int destroy_data)
 {
     if (ht != NULL)
@@ -410,6 +419,7 @@ void upo_ht_linprob_destroy(upo_ht_linprob_t ht, int destroy_data)
     }
 }
 
+// Svota ht con linprob
 void upo_ht_linprob_clear(upo_ht_linprob_t ht, int destroy_data)
 {
     if (ht != NULL && ht->slots != NULL)
@@ -435,6 +445,7 @@ void upo_ht_linprob_clear(upo_ht_linprob_t ht, int destroy_data)
     }
 }
 
+// Inserimento valore nella ht con linprob (sostituzione valore)
 void* upo_ht_linprob_put(upo_ht_linprob_t ht, void *key, void *value)
 {
     void *old_value = NULL;
@@ -498,6 +509,7 @@ void* upo_ht_linprob_put(upo_ht_linprob_t ht, void *key, void *value)
     return old_value;
 }
 
+// Inserimento valore nella ht con linprob 
 void upo_ht_linprob_insert(upo_ht_linprob_t ht, void *key, void *value)
 {
     // Controllo su tabella e slots
@@ -539,6 +551,7 @@ void upo_ht_linprob_insert(upo_ht_linprob_t ht, void *key, void *value)
     }
 }
 
+// Restituisce un determinato valore della ht associato ad una chiave
 void* upo_ht_linprob_get(const upo_ht_linprob_t ht, const void *key)
 {
     if(ht == NULL || ht->slots == NULL){
@@ -560,6 +573,7 @@ void* upo_ht_linprob_get(const upo_ht_linprob_t ht, const void *key)
     }
 }
 
+// Restituisce True(1) o False(0) se il valore è presente nella ht
 int upo_ht_linprob_contains(const upo_ht_linprob_t ht, const void *key)
 {
    if(ht == NULL || ht->slots == NULL){
@@ -571,6 +585,7 @@ int upo_ht_linprob_contains(const upo_ht_linprob_t ht, const void *key)
     return (value != NULL) ? 1 : 0; //Se value ha un valore la chiave é contenuta nella tabella e allora ritorno 1 sennó 0
 }
 
+// Cancellazione di un valore dalla ht 
 void upo_ht_linprob_delete(upo_ht_linprob_t ht, const void *key, int destroy_data)
 {
        if(ht == NULL || ht->slots == NULL){
@@ -603,6 +618,7 @@ void upo_ht_linprob_delete(upo_ht_linprob_t ht, const void *key, int destroy_dat
     }
 }
 
+// Calcolo size della ht
 size_t upo_ht_linprob_size(const upo_ht_linprob_t ht)
 {
     if(ht == NULL){ //Se la tabella é vuota ritorno 0
@@ -612,21 +628,25 @@ size_t upo_ht_linprob_size(const upo_ht_linprob_t ht)
     }
 }
 
+// Controllo se ht e' vuota
 int upo_ht_linprob_is_empty(const upo_ht_linprob_t ht)
 {
     return upo_ht_linprob_size(ht) == 0 ? 1 : 0;
 }
 
+// Calcolo della capacita' della ht
 size_t upo_ht_linprob_capacity(const upo_ht_linprob_t ht)
 {
     return (ht != NULL) ? ht->capacity : 0;
 }
 
+// Calcolo fattore di carico ht con linprob (dim / capacita')
 double upo_ht_linprob_load_factor(const upo_ht_linprob_t ht)
 {
     return upo_ht_linprob_size(ht) / (double) upo_ht_linprob_capacity(ht);
 }
 
+// Cambiamento capacità della tabella hash che usa il linear probing, ricostruendola con un nuovo numero di slots
 void upo_ht_linprob_resize(upo_ht_linprob_t ht, size_t n)
 {
     /* preconditions */
@@ -676,13 +696,9 @@ void upo_ht_linprob_resize(upo_ht_linprob_t ht, size_t n)
     }
 }
 
+/*** HASH TABLE - EXTRA OPERATIONS ***/
 
-/*** EXERCISE #2 - END of HASH TABLE with LINEAR PROBING ***/
-
-
-/*** EXERCISE #3 - BEGIN of HASH TABLE - EXTRA OPERATIONS ***/
-
-
+// Creazione lista concatenata contenente tutte le chiavi presenti nella tabella hash con separate chaining
 upo_ht_key_list_t upo_ht_sepchain_keys(const upo_ht_sepchain_t ht)
 {
     if(ht == NULL || ht->size == 0 || ht->slots == NULL){
@@ -709,6 +725,7 @@ upo_ht_key_list_t upo_ht_sepchain_keys(const upo_ht_sepchain_t ht)
     return list_head; //Ritorno la testa della lista
 }
 
+// Visita in ordine della ht (sepchain)
 void upo_ht_sepchain_traverse(const upo_ht_sepchain_t ht, upo_ht_visitor_t visit, void *visit_context)
 {
     if(visit == NULL){ //Controllo che la funzione di visita non sia nulla
@@ -729,6 +746,7 @@ void upo_ht_sepchain_traverse(const upo_ht_sepchain_t ht, upo_ht_visitor_t visit
     }
 }
 
+// Creazione lista concatenata contenente tutte le chiavi presenti nella tabella hash con linear probing
 upo_ht_key_list_t upo_ht_linprob_keys(const upo_ht_linprob_t ht)
 {
     if(ht == NULL || ht->slots == NULL || ht->size == 0){
@@ -755,6 +773,7 @@ upo_ht_key_list_t upo_ht_linprob_keys(const upo_ht_linprob_t ht)
     return list_head; //Ritorno la lista contententi tutte le chiavi
 }
 
+// Visita in ordine della ht (linprob)
 void upo_ht_linprob_traverse(const upo_ht_linprob_t ht, upo_ht_visitor_t visit, void *visit_context)
 {
     if(visit == NULL){ //Controllo che la funzione di visita non sia nulla
@@ -773,13 +792,7 @@ void upo_ht_linprob_traverse(const upo_ht_linprob_t ht, upo_ht_visitor_t visit, 
     }    
 }
 
-
-/*** EXERCISE #3 - END of HASH TABLE - EXTRA OPERATIONS ***/
-
-
-/*** BEGIN of HASH FUNCTIONS ***/
-
-
+/*** HASH FUNCTIONS ***/
 size_t upo_ht_hash_int_div(const void *x, size_t m)
 {
     /* preconditions */
@@ -868,5 +881,3 @@ size_t upo_ht_hash_str_stlport(const void *x, size_t m)
 {
     return upo_ht_hash_str(x, 0U, 33U, m);
 }
-
-/*** END of HASH FUNCTIONS ***/
